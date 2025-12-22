@@ -113,6 +113,46 @@ int sja1105_rgmii_cfg_pad_tx_config(struct sja1105_spi_setup *spi_setup, int por
 	                                   BUF_LEN);
 }
 
+
+/* ACU configuration to add delays to the RGMII lines*/
+void sja1105_cfg_pad_mii_id_reg(struct sja1105_spi_setup *spi_setup, int port)
+{
+	const int BUF_LEN = 4;
+	uint8_t packed_buf[BUF_LEN];
+	/* UM11040.pdf, Table 86, ACU Register overview */
+	int     pad_mii_id_offsets[] = {0x10, 0x11, 0x12, 0x13, 0x14};
+	struct  sja1105_cfg_pad_mii_id pad_mii_id;
+	uint8_t cDelay;  /* clock delay in the representation used by the hardware */
+	uint16_t delay = CLOCK_DELAY_81DEG; 
+
+	/* translate delay to hardware representation */
+	delay  = (uint16_t) (delay - MINIMUM_CLK_DELAY);    /* remove offset */
+	cDelay = (uint8_t)  (delay / (STEPSIZE_CLK_DELAY)); /* normalize */
+
+	// Payload
+	// RX values
+	pad_mii_id.rxc_stable_ovr = 0;  // Default value
+	pad_mii_id.rxc_delay = cDelay; // Delay
+	pad_mii_id.rxc_bypass = 0; // No bypassing
+	pad_mii_id.rxc_pd = 0;  // Enable 
+
+	// TX values
+	pad_mii_id.txc_stable_ovr = 0;  // Default value
+	pad_mii_id.txc_delay = cDelay; // Delay
+	pad_mii_id.txc_bypass = 0; // No bypassing
+	pad_mii_id.txc_pd = 0;  // Enable 
+
+	sja1105_cfg_pad_mii_id_pack(packed_buf, &pad_mii_id);
+	return sja1105_spi_send_packed_buf(spi_setup,
+	                                   SPI_WRITE,
+	                                   AGU_ADDR + pad_mii_id_offsets[port],
+	                                   packed_buf,
+	                                   BUF_LEN);
+
+}
+
+
+
 int rgmii_clocking_setup(struct sja1105_spi_setup *spi_setup,
                          int port, int speed_mbps)
 {
@@ -142,6 +182,11 @@ int rgmii_clocking_setup(struct sja1105_spi_setup *spi_setup,
 	rc = sja1105_rgmii_cfg_pad_tx_config(spi_setup, port);
 	if (rc < 0) {
 		printf("configuring tx pad registers failed");
+		goto out;
+	}
+	rc = sja1105_cfg_pad_mii_id_reg(spi_setup, port);
+	if (rc < 0) {
+		printf("configuring port rgmii delays failed");
 		goto out;
 	}
 	printf("Clocking setup succed \r\n");
