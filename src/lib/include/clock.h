@@ -63,7 +63,7 @@ struct sja1105_cfg_pad_mii_id{
 	uint64_t txc_delay;
 	uint64_t txc_bypass;
 	uint64_t txc_pd;
-}
+};
 
 
 /* CGU */
@@ -179,6 +179,7 @@ void sja1105_cfg_pad_mii_tx_pack(void*, struct sja1105_cfg_pad_mii_tx*);
 void sja1105_cfg_pad_mii_tx_unpack(void*, struct sja1105_cfg_pad_mii_tx*);
 void sja1105_cfg_pad_mii_tx_show(struct sja1105_cfg_pad_mii_tx*);
 
-void sja1105_cfg_pad_mii_id_reg(struct sja1105_spi_setup *spi_setup, int port);
+int sja1105_cfg_pad_mii_id_reg(struct sja1105_spi_setup *spi_setup, int port);
+void sja1105_cfg_pad_mii_id_pack(void*, struct sja1105_cfg_pad_mii_id*);
 
 #endif

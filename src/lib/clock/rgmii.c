@@ -115,7 +115,7 @@ int sja1105_rgmii_cfg_pad_tx_config(struct sja1105_spi_setup *spi_setup, int por
 
 
 /* ACU configuration to add delays to the RGMII lines*/
-void sja1105_cfg_pad_mii_id_reg(struct sja1105_spi_setup *spi_setup, int port)
+int sja1105_cfg_pad_mii_id_reg(struct sja1105_spi_setup *spi_setup, int port)
 {
 	const int BUF_LEN = 4;
 	uint8_t packed_buf[BUF_LEN];
