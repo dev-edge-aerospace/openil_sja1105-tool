@@ -118,7 +118,7 @@ int rgmii_clocking_setup(struct sja1105_spi_setup *spi_setup,
 {
 	int rc = 0;
 
-	logv("Configuring RGMII clocking for port %d, speed %dMbps",
+	printf("Configuring RGMII clocking for port %d, speed %dMbps\r\n",
 	     port, speed_mbps);
 	if (speed_mbps == 1000) {
 		/* 1000Mbps, IDIV disabled, divide by 1 */
@@ -131,19 +131,20 @@ int rgmii_clocking_setup(struct sja1105_spi_setup *spi_setup,
 		rc = sja1105_cgu_idiv_config(spi_setup, port, 1, 10);
 	}
 	if (rc < 0) {
-		loge("configuring idiv failed");
+		printf("configuring idiv failed");
 		goto out;
 	}
 	rc = sja1105_cgu_rgmii_tx_clk_config(spi_setup, port, speed_mbps);
 	if (rc < 0) {
-		loge("configuring rgmii tx clock failed");
+		printf("configuring rgmii tx clock failed");
 		goto out;
 	}
 	rc = sja1105_rgmii_cfg_pad_tx_config(spi_setup, port);
 	if (rc < 0) {
-		loge("configuring tx pad registers failed");
+		printf("configuring tx pad registers failed");
 		goto out;
 	}
+	printf("Clocking setup succed \r\n");
 out:
 	return rc;
 }

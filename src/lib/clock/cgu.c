@@ -43,10 +43,12 @@ int sja1105_clocking_setup(struct sja1105_spi_setup *spi_setup,
                            struct sja1105_xmii_params_entry *params,
                            struct sja1105_mac_config_entry  *mac_config)
 {
+	printf("Clocking setup==============================================================\r\n");
+
 	int speed_mbps;
 	int rc = 0;
 	int i;
-
+	
 	for (i = 0; i < 5; i++) {
 		switch (mac_config[i].speed) {
 		case 1: speed_mbps = 1000; break;
@@ -54,12 +56,17 @@ int sja1105_clocking_setup(struct sja1105_spi_setup *spi_setup,
 		case 3: speed_mbps = 10;   break;
 		default: loge("auto speed not yet supported"); return -1;
 		}
+		printf("Speed %d\r\n" , speed_mbps);
 		if (params->xmii_mode[i] == XMII_SPEED_MII) {
+			printf("MII clocking setup\r\n");
 			mii_clocking_setup(spi_setup, i, params->phy_mac[i]);
 		} else if (params->xmii_mode[i] == XMII_SPEED_RMII) {
+			printf("RMII clocking setup\r\n");
 			rmii_clocking_setup(spi_setup, i, params->phy_mac[i]);
 		} else if (params->xmii_mode[i] == XMII_SPEED_RGMII) {
+			printf("RGMII clocking setup\r\n");
 			rgmii_clocking_setup(spi_setup, i, speed_mbps);
+			printf("RGMII CLOCKS CONFIGURED\r\n");
 		} else if (params->xmii_mode[i] == XMII_SPEED_SGMII &&
 		           IS_PQRS(spi_setup->device_id)) {
 			if ((i == 4) && (IS_R(spi_setup->device_id, spi_setup->part_nr) ||
@@ -76,6 +83,7 @@ int sja1105_clocking_setup(struct sja1105_spi_setup *spi_setup,
 		}
 	}
 out:
+	printf("Exit clocking setup\r\n");
 	return rc;
 }
 

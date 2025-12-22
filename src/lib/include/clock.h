@@ -51,6 +51,18 @@ struct sja1105_cfg_pad_mii_tx {
 };
 
 
+struct sja1105_cfg_pad_mii_id{
+	uint64_t rxc_stable_ovr;
+	uint64_t rxc_delay;
+	uint64_t rxc_bypass;
+	uint64_t rxc_pd;
+	uint64_t txc_stable_ovr;
+	uint64_t txc_delay;
+	uint64_t txc_bypass;
+	uint64_t txc_pd;
+}
+
+
 /* CGU */
 #define CGU_ADDR    0x100000
 
