@@ -189,7 +189,7 @@ int rgmii_clocking_setup(struct sja1105_spi_setup *spi_setup,
 		printf("configuring port rgmii delays failed");
 		goto out;
 	}
-	printf("Clocking setup succed \r\n");
+	printf("Clocking setup successful \r\n");
 out:
 	return rc;
 }
