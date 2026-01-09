@@ -184,3 +184,8 @@ To get an SPI dump:
 # dry_run = false
 sja1105-tool config upload > spi_dump.log
 ```
+
+3. Edge modifications
+
+In order to get the tool working on Edge's hardware, a fixed 81 degrees delay
+has been added to the RGMII ports.

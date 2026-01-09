@@ -146,9 +146,6 @@ error:
 
 void cleanup(struct sja1105_spi_setup *spi_setup)
 {
-	// extern const char *default_device;
-	// extern const char *default_staging_area;
-
 	if (spi_setup->device!= NULL && spi_setup->device != default_device) {
 		printf("Try freeing the SPI device\r\n");
 		free((char*) spi_setup->device);
