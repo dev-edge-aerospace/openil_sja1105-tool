@@ -39,8 +39,8 @@
 #include <common.h>
 
 const char *default_staging_area = "/etc/sja1105/.staging";
-const char *default_device = "/dev/spidev0.1";
-const uint64_t default_device_id = SJA1105_NO_DEVICE_ID;
+const char *default_device = "/dev/spidev1.0";
+const uint64_t default_device_id = 0xAE00030Eull;
 /* default_device_id of SJA1105_NO_DEVICE_ID signals
  * to sja1105_spi_configure that it should attempt to read
  * the real Device ID over SPI. Its absence from sja1105.conf
@@ -76,14 +76,16 @@ config_set_defaults(struct sja1105_spi_setup *spi_setup,
 {
 #define SET_DEFAULT_VAL(struct_ptr, field, value, log, fmt) \
 	if (!fields_set->field) { \
-		log("%s field not defined in config file, setting default " \
+		printf("%s field not defined in config file, setting default " \
 		    "value " fmt, #field, value); \
 		struct_ptr->field = value; \
 	}
-	SET_DEFAULT_VAL(spi_setup, device_id, default_device_id, logv, "0x%" PRIx64);
-	SET_DEFAULT_VAL(spi_setup, device, default_device, logi, "%s");
-	SET_DEFAULT_VAL(spi_setup, staging_area, default_staging_area, logi, "%s");
-	SET_DEFAULT_VAL(spi_setup, mode, SPI_CPHA, logi, "0x%x" );
+	SET_DEFAULT_VAL(spi_setup, device_id, default_device_id, logv, "0x%lx" PRIx64);
+	// SET_DEFAULT_VAL(spi_setup, device, default_device, logi, "%s");
+	// SET_DEFAULT_VAL(spi_setup, staging_area, default_staging_area, logi, "%s");
+	spi_setup->device = default_device;
+	spi_setup->staging_area = default_staging_area;
+	SET_DEFAULT_VAL(spi_setup, mode, SPI_CPHA, logi, "0x%lx" );
 	SET_DEFAULT_VAL(spi_setup, bits, 8, logi, "%d");
 	SET_DEFAULT_VAL(spi_setup, speed, 1000000, logi, "%u");
 	SET_DEFAULT_VAL(spi_setup, delay, 0, logi, "%u");

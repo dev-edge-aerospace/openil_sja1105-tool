@@ -64,10 +64,44 @@ static void sja1105_cfg_pad_mii_tx_access(
 	pack_or_unpack(buf, &pad_mii_tx->clk_ipud,  1,  0, 4);
 }
 
+
+static void sja1105_cfg_pad_mii_id_access(
+		void *buf,
+		struct sja1105_cfg_pad_mii_id *pad_mii_id,
+		int write)
+{
+	int  (*pack_or_unpack)(void*, uint64_t*, int, int, int);
+	int    size = 4;
+
+	if (write == 0) {
+		pack_or_unpack = gtable_unpack;
+		memset(pad_mii_id, 0, sizeof(*pad_mii_id));
+	} else {
+		pack_or_unpack = gtable_pack;
+		memset(buf, 0, size);
+	}
+	pack_or_unpack(buf, &pad_mii_id->rxc_stable_ovr,   15, 15, 4);
+	pack_or_unpack(buf, &pad_mii_id->rxc_delay, 14, 10, 4);
+	pack_or_unpack(buf, &pad_mii_id->rxc_bypass,   9, 9, 4);
+	pack_or_unpack(buf, &pad_mii_id->rxc_pd, 8, 8, 4);
+	pack_or_unpack(buf, &pad_mii_id->txc_stable_ovr,  7, 7, 4);
+	pack_or_unpack(buf, &pad_mii_id->txc_delay, 6,  2, 4);
+	pack_or_unpack(buf, &pad_mii_id->txc_bypass,    1,  1, 4);
+	pack_or_unpack(buf, &pad_mii_id->txc_pd,    0,  0, 4);
+}
+
+
+
 void sja1105_cfg_pad_mii_tx_pack(void *buf,
                                  struct sja1105_cfg_pad_mii_tx *pad_mii_tx)
 {
 	sja1105_cfg_pad_mii_tx_access(buf, pad_mii_tx, 1);
+}
+
+void sja1105_cfg_pad_mii_id_pack(void *buf,
+                                 struct sja1105_cfg_pad_mii_id *pad_mii_id)
+{
+	sja1105_cfg_pad_mii_id_access(buf, pad_mii_id, 1);
 }
 
 void sja1105_cfg_pad_mii_tx_unpack(void *buf,

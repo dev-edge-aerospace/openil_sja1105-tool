@@ -46,7 +46,7 @@ int sja1105_clocking_setup(struct sja1105_spi_setup *spi_setup,
 	int speed_mbps;
 	int rc = 0;
 	int i;
-
+	
 	for (i = 0; i < 5; i++) {
 		switch (mac_config[i].speed) {
 		case 1: speed_mbps = 1000; break;

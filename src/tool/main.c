@@ -38,6 +38,9 @@
 #include <common.h>
 #include "internal.h"
 
+extern const char *default_device;
+extern const char *default_staging_area;
+
 const char *default_sja1105_conf_file = "/etc/sja1105/sja1105.conf";
 
 void print_usage()
@@ -143,17 +146,17 @@ error:
 
 void cleanup(struct sja1105_spi_setup *spi_setup)
 {
-	extern const char *default_device;
-	extern const char *default_staging_area;
-
-	if (spi_setup->device && spi_setup->device != default_device) {
+	if (spi_setup->device!= NULL && spi_setup->device != default_device) {
+		printf("Try freeing the SPI device\r\n");
 		free((char*) spi_setup->device);
 	}
-	if (spi_setup->staging_area &&
+	if (spi_setup->staging_area!= NULL &&
 	    spi_setup->staging_area != default_staging_area) {
+		printf("Try freeing the SPI device\r\n");
 		free((char*) spi_setup->staging_area);
 	}
 	if (spi_setup->fd) {
+		printf("Try closing the file descriptor\r\n");
 		close(spi_setup->fd);
 	}
 }
@@ -186,6 +189,7 @@ int main(int argc, char *argv[])
 	if (rc == SJA1105_ERR_OK) {
 		logv("ok");
 	}
+
 	cleanup(&spi_setup);
 out:
 	return reinterpreted_return_code(rc);

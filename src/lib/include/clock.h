@@ -37,6 +37,9 @@
 
 /* AGU */
 #define AGU_ADDR    0x100800
+#define CLOCK_DELAY_81DEG 810U  /**< 81.0 degrees */
+#define MINIMUM_CLK_DELAY 738U  /**< 73.8 degrees */
+#define STEPSIZE_CLK_DELAY  9U  /**<  0.9 degrees */
 
 struct sja1105_cfg_pad_mii_tx {
 	uint64_t d32_os;
@@ -51,8 +54,21 @@ struct sja1105_cfg_pad_mii_tx {
 };
 
 
+struct sja1105_cfg_pad_mii_id{
+	uint64_t rxc_stable_ovr;
+	uint64_t rxc_delay;
+	uint64_t rxc_bypass;
+	uint64_t rxc_pd;
+	uint64_t txc_stable_ovr;
+	uint64_t txc_delay;
+	uint64_t txc_bypass;
+	uint64_t txc_pd;
+};
+
+
 /* CGU */
 #define CGU_ADDR    0x100000
+
 
 /* UM10944 Table 82.
  * IDIV_0_C to IDIV_4_C control registers
@@ -162,5 +178,8 @@ int sgmii_clocking_setup(struct sja1105_spi_setup *spi_setup,
 void sja1105_cfg_pad_mii_tx_pack(void*, struct sja1105_cfg_pad_mii_tx*);
 void sja1105_cfg_pad_mii_tx_unpack(void*, struct sja1105_cfg_pad_mii_tx*);
 void sja1105_cfg_pad_mii_tx_show(struct sja1105_cfg_pad_mii_tx*);
+
+int sja1105_cfg_pad_mii_id_reg(struct sja1105_spi_setup *spi_setup, int port);
+void sja1105_cfg_pad_mii_id_pack(void*, struct sja1105_cfg_pad_mii_id*);
 
 #endif

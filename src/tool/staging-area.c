@@ -287,6 +287,8 @@ int static_config_flush(struct sja1105_spi_setup *spi_setup,
 	struct sja1105_general_status status;
 	struct sja1105_egress_port_mask port_mask;
 	int i, rc;
+	
+	printf("Static config flush init \r\n");
 
 	rc = sja1105_static_config_check_valid(config);
 	if (rc < 0) {
@@ -335,14 +337,16 @@ int static_config_flush(struct sja1105_spi_setup *spi_setup,
 	}
 	rc = static_config_upload(spi_setup, config);
 	if (rc < 0) {
-		loge("static_config_upload failed");
+		printf("static_config_upload failed");
 		goto hardware_left_floating_error;
 	}
 	/* Configure the CGU (PHY link modes and speeds) */
+	printf("About to enter clocking setup\r\n");
 	rc = sja1105_clocking_setup(spi_setup, &config->xmii_params[0],
 	                           &config->mac_config[0]);
+	printf("After clocking setup\r\n");
 	if (rc < 0) {
-		loge("sja1105_clocking_setup failed");
+		printf("sja1105_clocking_setup failed");
 		goto hardware_left_floating_error;
 	}
 	/* Check that SJA1105 responded well to the config upload */
@@ -375,12 +379,15 @@ int static_config_flush(struct sja1105_spi_setup *spi_setup,
 	return SJA1105_ERR_OK;
 staging_area_invalid_error:
 	sja1105_err_remap(rc, SJA1105_ERR_STAGING_AREA_INVALID);
+	printf("Stagin area error\r\n");
 	return rc;
 hardware_left_floating_error:
 	sja1105_err_remap(rc, SJA1105_ERR_UPLOAD_FAILED_HW_LEFT_FLOATING);
+	printf("Hardware floating error\r\n");
 	return rc;
 hardware_not_responding_error:
 	sja1105_err_remap(rc, SJA1105_ERR_HW_NOT_RESPONDING);
+	printf("Hardware not responding error\r\n");
 	return rc;
 }
 
@@ -389,10 +396,10 @@ staging_area_flush(struct sja1105_spi_setup *spi_setup,
                    struct sja1105_staging_area *staging_area)
 {
 	int rc;
-
+	printf ("Stagin area flush\r\n");
 	rc = static_config_flush(spi_setup, &staging_area->static_config);
 	if (rc < 0) {
-		loge("static_config_flush failed");
+		printf("static_config_flush failed");
 		goto out;
 	}
 	/* TODO: other configuration tables?

@@ -60,6 +60,7 @@ get_flush_mode(struct sja1105_spi_setup *spi_setup, int *argc, char ***argv)
 
 int config_parse_args(struct sja1105_spi_setup *spi_setup, int argc, char **argv)
 {
+	printf("Entered Config parse args\r\n");
 	const char *options[] = {
 		"help",
 		"load",
@@ -85,6 +86,7 @@ int config_parse_args(struct sja1105_spi_setup *spi_setup, int argc, char **argv
 	} else if (strcmp(options[match], "help") == 0) {
 		print_usage();
 	} else if (strcmp(options[match], "load") == 0) {
+		printf("Config load\r\n");
 		get_flush_mode(spi_setup, &argc, &argv);
 		if (argc != 1) {
 			goto parse_error;
@@ -113,6 +115,7 @@ int config_parse_args(struct sja1105_spi_setup *spi_setup, int argc, char **argv
 				goto hardware_left_floating_staging_area_dirty_error;
 			}
 		}
+		printf("End onf config load\r\n");
 	} else if (strcmp(options[match], "save") == 0) {
 		if (argc != 1) {
 			goto parse_error;
@@ -167,6 +170,7 @@ int config_parse_args(struct sja1105_spi_setup *spi_setup, int argc, char **argv
 			}
 		}
 	} else if (strcmp(options[match], "upload") == 0) {
+		printf("Config upload\r\n");
 		if (argc != 0) {
 			goto parse_error;
 		}
@@ -183,6 +187,7 @@ int config_parse_args(struct sja1105_spi_setup *spi_setup, int argc, char **argv
 		if (rc < 0) {
 			goto propagated_error;
 		}
+		printf("End of config upload\r\n");
 	} else if (strcmp(options[match], "modify") == 0) {
 		get_flush_mode(spi_setup, &argc, &argv);
 		rc = staging_area_load(spi_setup->staging_area, &staging_area);
@@ -266,25 +271,32 @@ int config_parse_args(struct sja1105_spi_setup *spi_setup, int argc, char **argv
 	sja1105_err_remap(rc, SJA1105_ERR_OK);
 	return rc;
 invalid_staging_area_error:
+	printf("Stagin area error\r\n");
 	sja1105_err_remap(rc, SJA1105_ERR_STAGING_AREA_INVALID);
 	return rc;
 hardware_left_floating_staging_area_dirty_error:
+	printf("Stagin area dirty error\r\n");
 	sja1105_err_remap(rc, SJA1105_ERR_UPLOAD_FAILED_HW_LEFT_FLOATING_STAGING_AREA_DIRTY);
 	return rc;
 hardware_not_responding_staging_area_dirty_error:
 	sja1105_err_remap(rc, SJA1105_ERR_HW_NOT_RESPONDING_STAGING_AREA_DIRTY);
+	printf("Hardwrae not responding staging dirty\r\n");
 	return rc;
 hardware_not_responding_error:
 	sja1105_err_remap(rc, SJA1105_ERR_HW_NOT_RESPONDING);
+	printf("Hardware not responding\r\n");
 	return rc;
 filesystem_error:
 	sja1105_err_remap(rc, SJA1105_ERR_FILESYSTEM);
+	printf("Filesystem error\r\n");
 	return rc;
 invalid_xml_error:
 	sja1105_err_remap(rc, SJA1105_ERR_INVALID_XML);
+	printf("Invalid xml\r\n");
 	return rc;
 parse_error:
 	sja1105_err_remap(rc, SJA1105_ERR_CMDLINE_PARSE);
+	printf("Parse error\r\n");
 	print_usage();
 	return rc;
 propagated_error:
